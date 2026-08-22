@@ -3,27 +3,24 @@ services:
     name: watch-party-backend
     runtime: node
     rootDir: backend
-    plan: free
     buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: PORT
         value: 4000
       - key: CLIENT_ORIGIN
-        sync: false # set to your deployed frontend URL after it's created
+        sync: false
       - key: MONGODB_URI
-        sync: false # optional - paste a MongoDB Atlas connection string
+        sync: false
 
-  - type: web
+  - type: static
     name: watch-party-frontend
-    runtime: static
     rootDir: frontend
-    plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
       - key: VITE_SOCKET_URL
-        sync: false # set to your deployed backend URL, e.g. https://watch-party-backend.onrender.com
+        sync: false
     routes:
       - type: rewrite
         source: /*

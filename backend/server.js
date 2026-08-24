@@ -11,9 +11,13 @@ const { initSocket } = require("./src/socket");
 const roomManager = require("./src/classes/RoomManager");
 
 const PORT = process.env.PORT || 4000;
-const CLIENT_ORIGINS = (process.env.CLIENT_ORIGIN || "http://localhost:5173")
-  .split(",")
-  .map((s) => s.trim());
+
+// Hardcoded allowed origins to fix CORS permanently
+const CLIENT_ORIGINS = [
+  "https://youtubewatchedparty.vercel.app",
+  "http://localhost:5173",
+  ...(process.env.CLIENT_ORIGIN ? process.env.CLIENT_ORIGIN.split(",").map((s) => s.trim()) : [])
+];
 
 const app = express();
 app.use(cors({ origin: CLIENT_ORIGINS, credentials: true }));
@@ -36,7 +40,7 @@ const io = new Server(server, {
 initSocket(io);
 
 async function start() {
-  await connectDB(); // non-fatal if it fails - see src/config/db.js
+  await connectDB();
   server.listen(PORT, () => {
     console.log(`[server] Watch Party backend listening on port ${PORT}`);
     console.log(`[server] Allowed client origins: ${CLIENT_ORIGINS.join(", ")}`);
